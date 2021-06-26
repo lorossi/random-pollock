@@ -1,21 +1,15 @@
 class Brush {
-  constructor(size, noise, frame_count, scl = 1) {
+  constructor(size, noise, frame_count, palette, scl = 1, random = false) {
     this._size = size;
     this._noise = noise;
+    this._random = random;
 
     this._noise_scl = 0.001 * scl; // relative to movement
-    this._time_scl = 0.001 * scl; // used in seeding
+    this._time_scl = 0.005 * scl; // used in seeding
     this._seed_scl = 0.0025 * scl; // used in seeding
-    this._max_acc = 3;
+    this._max_acc = 3 * scl;
     this._max_vel = 2;
-    this._palette = [
-      "#FBA922",
-      "#F0584A",
-      "#2B5877",
-      "#1194A8",
-      "#1FC7B7",
-      "#FFF",
-    ];
+    this._palette = [...palette];
     this._palette_index = Math.floor(Math.random() * this._palette.length);
     this.reset(frame_count);
   }
@@ -30,13 +24,18 @@ class Brush {
     this._velocity = new Vector(0, 0);
     this._acceleration = new Vector(0, 0);
 
-    const nx = this._position.x * this._seed_scl;
-    const ny = this._position.y * this._seed_scl;
-    const t = frame_count * this._time_scl;
-    const n = (this._noise.noise3D(nx, ny, t) + 1) / 2;
+    let n;
+    if (this._random) {
+      n = Math.random();
+    } else {
+      const nx = this._position.x * this._seed_scl;
+      const ny = this._position.y * this._seed_scl;
+      const t = frame_count * this._time_scl;
+      n = (this._noise.noise3D(nx, ny, t) + 1) / 2;
+    }
 
     this._seed = n * 100;
-    this._r = Math.floor(n * 10 + 5);
+    this._r = Math.floor(n * 8);
     this._max_life = n * 120 + 120;
     this._life = 0;
 
@@ -60,7 +59,6 @@ class Brush {
     this._velocity.limit(this._max_vel);
     this._position.add(this._velocity);
     this._life += this._velocity.mag();
-
 
     if (
       this._position.x < 0 ||
