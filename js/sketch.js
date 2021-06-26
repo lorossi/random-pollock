@@ -1,48 +1,7 @@
 class Sketch extends Engine {
   preload() {
-    this._brushes_num = 1000;
-    this._preload_frames = 180;
-    this._palettes = [[
-      "#FBA922",
-      "#F0584A",
-      "#2B5877",
-      "#1194A8",
-      "#1FC7B7",
-      "#FFF",
-    ], [
-      "#012840",
-      "#315955",
-      "#788C64",
-      "#D1D99A",
-      "#BFB063",
-      "#FFF",
-    ],
-    [
-      "#2E038C",
-      "#0FBF9F",
-      "#F2B705",
-      "#F2541B",
-      "#F25252",
-      "#FFF",
-    ],
-    [
-      "#0477BF",
-      "#7AB3BF",
-      "#F29422",
-      "#D90404",
-      "#590202",
-      "#FFF",
-    ],
-    [
-      "#4024A6",
-      "#0468BF",
-      "#049DBF",
-      "#93A603",
-      "#F2B705",
-      "#FFF",
-    ],
-    ];
-    this._random = true;
+    this._brushes_num = 2000;
+    this._preload_frames = 60;
   }
 
   setup() {
@@ -55,10 +14,10 @@ class Sketch extends Engine {
     this._simplex = new SimplexNoise();
     // setup particles
     this._brushes = [];
-    const scl = random(0.2, 5);
-    const palette = random_from_array(this._palettes);
+    const scl = random(0.5, 2);
+    const palette = generate_palette(5);
     for (let i = 0; i < this._brushes_num; i++) {
-      this._brushes.push(new Brush(this.width, this._simplex, this.frameCount, palette, scl, this._random));
+      this._brushes.push(new Brush(this.width, this._simplex, this.frameCount, palette, scl));
     }
     this.background("black");
     // preload to avoid pop-in effect
@@ -88,20 +47,51 @@ class Sketch extends Engine {
   }
 }
 
-const ease = (x) => Math.sin((x * Math.PI) / 2);
+const generate_palette = (variation = 0, min_sat = 80, max_light = 50, distance = 15) => {
+  const wrap_degrees = (deg) => {
+    while (deg < 0) deg += 360;
+    while (deg > 360) deg -= 360;
+    return deg;
+  };
+
+  let palette = [];
+  const central_angle = Math.floor(Math.random() * 360);
+
+  for (let i = 0; i < 3; i++) {
+    const saturation = ((90 - min_sat) / 2) * i + min_sat + random(-1, 1) * variation;
+    const lightness = ((max_light - 46) / 2) * (2 - i) + 46 + random(-1, 1) * variation;
+    const angle_distance = distance + random(-1, 1) * variation;
+    let angle;
+
+    if (i == 0) {
+      angle = central_angle;
+      palette.push(`hsl(${angle}, ${saturation}%, ${lightness}%)`);
+    } else {
+      for (let j = 0; j < 2; j++) {
+        const dir = j == 0 ? -1 : 1;
+        angle = wrap_degrees(central_angle + dir * angle_distance * i);
+        palette.push(`hsl(${angle}, ${saturation}%, ${lightness}%)`);
+      }
+    }
+  }
+
+  const complementary_angle = wrap_degrees(central_angle + 180);
+  palette.push(`hsl(${complementary_angle}, ${min_sat}%, ${max_light}%)`);
+  // add white
+  const r = random();
+  if (r < 0.25) palette.push("hsl(0, 100%, 100%)");
+  return palette;
+};
+
+const ease = x => {
+  const c1 = 1.70158;
+  const c3 = c1 + 1;
+
+  return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2);
+};
 
 const random = (a, b) => {
   if (a == undefined && b == undefined) return random(0, 1);
   else if (b == undefined) return random(0, a);
   else if (a != undefined && b != undefined) return Math.random() * (b - a) + a;
-};
-
-const random_int = (a, b) => {
-  if (a == undefined && b == undefined) return random_int(0, 1);
-  else if (b == undefined) return random_int(0, a);
-  else if (a != undefined && b != undefined) return Math.floor(Math.random() * (b - a)) + a;
-};
-
-const random_from_array = arr => {
-  return arr[random_int(arr.length)];
 };
