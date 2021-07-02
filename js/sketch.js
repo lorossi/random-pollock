@@ -15,9 +15,11 @@ class Sketch extends Engine {
     // setup particles
     this._brushes = [];
     const scl = random(0.5, 2);
+    const min_life = random(100, 200);
+    const max_life = min_life + random(100, 200);
     const palette = generate_palette();
     for (let i = 0; i < this._brushes_num; i++) {
-      this._brushes.push(new Brush(this.width, this._simplex, palette, scl));
+      this._brushes.push(new Brush(this.width, this._simplex, palette, scl, min_life, max_life));
     }
     this.background("black");
     // preload to avoid pop-in effect

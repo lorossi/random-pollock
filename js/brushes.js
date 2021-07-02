@@ -1,13 +1,15 @@
 class Brush {
-  constructor(size, noise, palette, scl = 1) {
+  constructor(size, noise, palette, scl = 1, max_life = 100, min_life = 20) {
     this._size = size;
     this._noise = noise;
-    this._scl = scl;
     this._palette = [...palette];
+    this._scl = scl;
+    this._max_life = max_life;
+    this._min_life = min_life;
 
     this._noise_scl = 0.015 * scl; // relative to movement
-    this._seed_scl = 0.0025 * scl; // used in seeding
-    this._max_force = 0.2;
+    this._seed_scl = 0.005 * scl; // used in seeding
+    this._max_force = 1;
     this._max_acc = 4 * scl;
     this._max_vel = 2;
 
@@ -32,7 +34,7 @@ class Brush {
     const n3 = (this._noise.noise3D(nx, ny, 2000) + 1) / 2;
 
     this._r = Math.floor(n1 * 4) + 4;
-    this._max_life = n2 * 100 + 100;
+    this._start_life = n2 * (this._max_life - this._min_life) + this._min_life;
     this._life = 0;
     this._palette_index = Math.floor(n3 * this._palette.length);
   }
@@ -62,7 +64,7 @@ class Brush {
       this._position.x > this._size ||
       this._position.y < 0 ||
       this._position.y > this._size ||
-      this._life > this._max_life
+      this._life > this._start_life
     ) {
       this._dead = true;
     }
@@ -71,7 +73,7 @@ class Brush {
   show(ctx) {
     if (this._dead) return;
     // pre calculate "brush width"
-    const eased_life = ease(1 - this._life / this._max_life);
+    const eased_life = ease(1 - this._life / this._start_life);
     const line_width = eased_life * this._r;
 
     ctx.save();
