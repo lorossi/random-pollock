@@ -14,7 +14,7 @@ class Sketch extends Engine {
     this._simplex = new SimplexNoise();
     // setup particles
     this._brushes = [];
-    const scl = random(0.9, 1.1);
+    const scl = random(0.5, 2);
     const palette = generate_palette();
     for (let i = 0; i < this._brushes_num; i++) {
       this._brushes.push(new Brush(this.width, this._simplex, palette, scl));
