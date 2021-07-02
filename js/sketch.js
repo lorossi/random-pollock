@@ -124,7 +124,7 @@ const generate_palette = () => {
 };
 
 const ease = x => {
-  return 1 - Math.cos((x * Math.PI) / 2);
+  return 1 - Math.pow(1 - x, 3);
 };
 
 const random = (a, b) => {
