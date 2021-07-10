@@ -40,10 +40,6 @@ class Sketch extends Engine {
       }
     });
     this.ctx.restore();
-
-    if (this.frameCount % 60 == 0) {
-      console.log({ fps: this.frameRate, percent: percent });
-    }
   }
 
   mousedown() {
@@ -53,6 +49,7 @@ class Sketch extends Engine {
 
 const generate_palette = () => {
   // interesting https://stackoverflow.com/questions/43044/algorithm-to-randomly-generate-an-aesthetically-pleasing-color-palette
+  // but so far all tests were failures
 
   const palettes = [[
     "#FBA922",
@@ -108,12 +105,6 @@ const generate_palette = () => {
     "#D95E32",
     "#BF4E4E",
   ], [
-    "#02735E",
-    "#1ED9B7",
-    "#16F2B4",
-    "#A0F2C4",
-    "#262522",
-  ], [
     "#D9D9D9",
     "#8C8C8C",
     "#737373",
@@ -122,7 +113,9 @@ const generate_palette = () => {
   ],
   ];
 
-  return random_from_array(palettes);
+  const picked = random_from_array(palettes);
+  console.log({ palette: picked });
+  return picked;
 };
 
 const ease = x => {
