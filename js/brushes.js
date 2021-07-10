@@ -8,12 +8,12 @@ class Brush {
     this._min_life = min_life;
 
     this._noise_scl = 0.015 * scl; // relative to movement
-    this._seed_scl = 0.001 * scl; // used in seeding
-    this._time_rho = 1; // needed to loop the animation
+    this._seed_scl = 0.0025 * scl; // used in seeding
+    this._time_rho = 0.1; // needed to loop the animation
     this._max_force = 0.01;
     this._max_acc = 0.5 * scl;
     this._max_vel = 3;
-    this._G = 0.001 * scl; // gravity acceleration
+    this._G = 0.0015 * scl; // gravity acceleration
 
     this.reset(0);
   }
@@ -38,7 +38,7 @@ class Brush {
     const n2 = (this._generateNoise(nx, ny, tx + 1000, ty + 1000) + 1) / 2;
     const n3 = (this._generateNoise(nx, ny, tx + 2000, ty + 2000) + 1) / 2;
 
-    this._r = Math.floor(n1 * 7) + 2;
+    this._r = Math.floor(n1 * 7) + 3;
     this._start_life = n2 * (this._max_life - this._min_life) + this._min_life;
     this._life = 0;
     this._palette_index = Math.floor(n3 * this._palette.length);
