@@ -1,16 +1,15 @@
 class Particle {
-  constructor(size, noise, palette, scl, max_life, min_life, noise_angle) {
+  constructor(size, noise, palette, scl, max_life, min_life) {
     this._size = size;
     this._noise = noise;
     this._palette = [...palette];
     this._scl = scl;
     this._max_life = max_life;
     this._min_life = min_life;
-    this._noise_angle = noise_angle;
 
     this._noise_scl = 0.025 * scl; // used to calculate movement
-    this._seed_scl = 0.005 * scl; // used in seeding
-    this._time_scl = 0.02; // used in seeding
+    this._seed_scl = 0.002 * scl; // used in seeding
+    this._time_scl = 0.075; // used in seeding
     this._max_force = 0.25 * scl;
     this._max_acc = 0.25 * scl;
     this._max_vel = 2 * scl;
@@ -33,8 +32,8 @@ class Particle {
     this._seed = this._noise_scl * random(-1, 1) * 5;
 
     // pre calculation
-    const nx = this._seed_scl * this._position.x * Math.cos(this._noise_angle);
-    const ny = this._seed_scl * this._position.y * Math.sin(this._noise_angle);
+    const nx = this._seed_scl * this._position.x;
+    const ny = this._seed_scl * this._position.y;
 
     // noise calculation
     //  all the noise variables are uncorrelated to each other but still
