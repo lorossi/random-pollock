@@ -1,7 +1,7 @@
 class Sketch extends Engine {
   preload() {
-    this._brushes_num = 2000;
-    this._preload_frames = 0;
+    this._brushes_num = 3000;
+    this._duration = 900;
   }
 
   setup() {
@@ -14,7 +14,7 @@ class Sketch extends Engine {
     this._simplex = new SimplexNoise();
     // setup particles
     this._brushes = [];
-    const scl = random(0.5, 2);
+    const scl = random(0.9, 1.1);
     const min_life = random(100, 200);
     const max_life = min_life + random(100, 200);
     const palette = generate_palette();
@@ -22,10 +22,6 @@ class Sketch extends Engine {
       this._brushes.push(new Brush(this.width, this._simplex, palette, scl, min_life, max_life));
     }
     this.background("black");
-    // preload to avoid pop-in effect
-    for (let i = 0; i < this._preload_frames; i++) {
-      this.showParticles();
-    }
   }
 
   draw() {
@@ -33,15 +29,21 @@ class Sketch extends Engine {
   }
 
   showParticles() {
+    const percent = (this.frameCount % this._duration) / this._duration;
+
     this.ctx.save();
     this._brushes.forEach(b => {
-      b.show(this.ctx);
       b.move();
+      b.show(this.ctx);
       if (b.dead) {
-        b.reset();
+        b.reset(percent);
       }
     });
     this.ctx.restore();
+
+    if (this.frameCount % 60 == 0) {
+      console.log({ fps: this.frameRate, percent: percent });
+    }
   }
 
   mousedown() {
@@ -50,75 +52,73 @@ class Sketch extends Engine {
 }
 
 const generate_palette = () => {
+  // interesting https://stackoverflow.com/questions/43044/algorithm-to-randomly-generate-an-aesthetically-pleasing-color-palette
+
   const palettes = [[
     "#FBA922",
     "#F0584A",
     "#2B5877",
     "#1194A8",
     "#1FC7B7",
-    "#FFF",
   ], [
     "#012840",
     "#315955",
     "#788C64",
     "#D1D99A",
     "#BFB063",
-    "#FFF",
   ], [
     "#2E038C",
     "#0FBF9F",
     "#F2B705",
     "#F2541B",
     "#F25252",
-    "#FFF",
   ], [
     "#0477BF",
     "#7AB3BF",
     "#F29422",
     "#D90404",
     "#590202",
-    "#FFF",
   ], [
     "#4024A6",
     "#0468BF",
     "#049DBF",
     "#93A603",
     "#F2B705",
-    "#FFF",
   ], [
     "#40171A",
     "#733444",
     "#667349",
     "#BFAAA3",
     "#F2F2F2",
-    "#FFF",
   ], [
     "#339AA6",
     "#F2DC99",
     "#F2B988",
     "#F28B66",
     "#F26A4B",
-    "#FFF",
   ], ["#96D2D9",
     "#F28D77",
     "#D9564A",
     "#F25050",
     "#F2C9C9",
-    "#FFF",
   ], [
     "#BF506E",
     "#F2BB13",
     "#D99C2B",
     "#D95E32",
     "#BF4E4E",
-    "#FFF",
   ], [
     "#02735E",
     "#1ED9B7",
     "#16F2B4",
     "#A0F2C4",
     "#262522",
-    "#FFF",
+  ], [
+    "#D9D9D9",
+    "#8C8C8C",
+    "#737373",
+    "#404040",
+    "#262626",
   ],
   ];
 
