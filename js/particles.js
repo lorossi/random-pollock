@@ -10,19 +10,21 @@ class Particle {
 
     this._noise_scl = 0.025 * scl; // used to calculate movement
     this._seed_scl = 0.005 * scl; // used in seeding
-    this._time_scl = 0.01; // used in seeding
-    this._max_force = 0.4 * scl;
-    this._max_acc = 0.75 * scl;
-    this._max_vel = 3;
-    this._G = 0.05 * scl; // gravity acceleration
-
+    this._time_scl = 0.02; // used in seeding
+    this._max_force = 0.25 * scl;
+    this._max_acc = 0.25 * scl;
+    this._max_vel = 2 * scl;
+    this._G = 0.1 * scl; // gravity acceleration
+    this._min_r = 3;
+    this._max_r = 10;
 
     this.reset(0);
   }
 
   reset(frameCount) {
+    //  particles can be drawn ABOVE the top to add drip effect there too
     const px = random(this._size);
-    const py = random(this._size);
+    const py = random(-this._size / 10, this._size);
     const t = frameCount / 60 * this._time_scl;
 
     this._gravity = new Vector(0, this._G);
@@ -42,8 +44,9 @@ class Particle {
     const n3 = (this._generateNoise(nx, ny, t, 30000) + 1) / 2;
     const n4 = (this._generateNoise(nx, ny, t, 40000) + 1) / 2;
 
-    // particle radius
-    this._r = Math.floor(n1 * 7) + 3;
+    // particle mass and radius
+    this._r = Math.floor(n1 * (this._max_r - this._min_r)) + this._min_r;
+    this._mass = Math.pow(this._r / this._max_r, 3) * 2; // approximation
     // particle starting life and life life
     this._start_life = n2 * (this._max_life - this._min_life) + this._min_life;
     this._life = 0;
@@ -74,12 +77,13 @@ class Particle {
     // use noise generation function to calculate the force vector
     let n;
     n = this._generateNoise(nx, ny, this._seed);
-    const theta = n * Math.PI * 50;
+    const theta = n * Math.PI * 2;
     n = (this._generateNoise(nx, ny, this._seed, 1000, 1000) + 1) / 2;
     const rho = n * this._max_force;
     // simple physics simulation
     this._force = new Vector.fromAngle2D(theta).setMag(rho);
     this._force.add(this._gravity); // add gravity
+    this._force.mult(this._mass); // 2nd newton law
     this._acceleration.add(this._force);
     this._acceleration.limit(this._max_acc);
     this._velocity.add(this._acceleration);
@@ -92,7 +96,6 @@ class Particle {
     if (
       this._position.x < 0 ||
       this._position.x > this._size ||
-      this._position.y < 0 ||
       this._position.y > this._size ||
       this._life > this._start_life
     ) {
@@ -106,6 +109,7 @@ class Particle {
       this._delay--;
       return;
     }
+    if (this._position.y < 0) return; // some particles are added above the top
 
     // pre calculate "brush width"
     const eased_life = this._ease(1 - this._life / this._start_life);

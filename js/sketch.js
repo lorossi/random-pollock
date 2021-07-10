@@ -81,11 +81,14 @@ class Sketch extends Engine {
     });
     this.ctx.restore();
 
-    this.ctx.strokeStyle = "black";
-    this.ctx.lineWidth = 10;
+    const frame_size = 10;
+    const extra = frame_size / 2;
+    this.ctx.strokeStyle = "#191715";
+    this.ctx.fillStyle = "#fbf1e3";
+    this.ctx.lineWidth = frame_size;
 
     this.ctx.beginPath();
-    this.ctx.rect(this._border_displacement, this._border_displacement, this._inner_size, this._inner_size);
+    this.ctx.rect(this._border_displacement - extra, this._border_displacement - extra, this._inner_size + 2 * extra, this._inner_size + 2 * extra);
     this.ctx.stroke();
 
     this.ctx.restore();
