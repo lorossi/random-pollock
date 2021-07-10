@@ -15,10 +15,37 @@ class Sketch extends Engine {
     this._simplex = new SimplexNoise();
     // create the particles
     this.createParticles();
+    // setup capturer
+    this._capturer_started = false;
+    if (this._recording) {
+      this._capturer = new CCapture({ format: "png" });
+      // WARNING: slow as heck
+      for (let i = 0; i < this._duration; i++) this.showParticles();
+    }
   }
 
   draw() {
+    // start capturer
+    if (!this._capturer_started && this._recording) {
+      this._capturer_started = true;
+      this._capturer.start();
+      console.log("%c Recording started", "color: green; font-size: 2rem");
+    }
+
+    // draw all particles
     this.showParticles();
+
+    // handle recording
+    if (this._recording) {
+      if ((this.frameCount - this._frameOffset) < this._duration) {
+        this._capturer.capture(this._canvas);
+      } else {
+        this._recording = false;
+        this._capturer.stop();
+        this._capturer.save();
+        console.log("%c Recording ended", "color: red; font-size: 2rem");
+      }
+    }
   }
 
   createParticles() {
@@ -33,14 +60,6 @@ class Sketch extends Engine {
       this.particles.push(new Particle(this.width, this._simplex, palette, scl, min_life, max_life, noise_angle));
     }
     this.background("#fbf1e3");
-
-    // setup capturer
-    this._capturer_started = false;
-    if (this._recording) {
-      this._capturer = new CCapture({ format: "png" });
-      // WARNING: slow as heck
-      for (let i = 0; i < this._duration; i++) this.showParticles();
-    }
   }
 
   showParticles() {
