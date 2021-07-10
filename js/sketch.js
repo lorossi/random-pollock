@@ -4,6 +4,7 @@ class Sketch extends Engine {
     this._duration = 900;
     this._recording = false;
     this._random_palette = true;
+    this._border = 0.15;
   }
 
   setup() {
@@ -11,6 +12,10 @@ class Sketch extends Engine {
     this._current_palette = 0;
     // used in time calculation
     this._frameOffset = 0;
+    // calculate border displacement
+    // rounded for better performances
+    this._border_displacement = Math.floor(this._border * this.width / 2);
+    this._inner_size = Math.floor(this.height * (1 - this._border));
     // noise setup
     this._simplex = new SimplexNoise();
     // create the particles
@@ -51,19 +56,22 @@ class Sketch extends Engine {
   createParticles() {
     // setup particles
     this.particles = [];
+    const size = (1 - this._border) * this.width;
     const scl = random(0.9, 1.1);
     const min_life = random(50, 100);
     const max_life = min_life + random(50, 100);
     const palette = this.generate_palette();
     const noise_angle = random(Math.PI); // adds direction to the noise
     for (let i = 0; i < this._brushes_num; i++) {
-      this.particles.push(new Particle(this.width, this._simplex, palette, scl, min_life, max_life, noise_angle));
+      this.particles.push(new Particle(size, this._simplex, palette, scl, min_life, max_life, noise_angle));
     }
     this.background("#fbf1e3");
   }
 
   showParticles() {
     this.ctx.save();
+    this.ctx.save();
+    this.ctx.translate(this._border_displacement, this._border_displacement);
     this.particles.forEach(b => {
       b.move();
       b.show(this.ctx);
@@ -71,6 +79,15 @@ class Sketch extends Engine {
         b.reset(this.frameCount - this._frameOffset);
       }
     });
+    this.ctx.restore();
+
+    this.ctx.strokeStyle = "black";
+    this.ctx.lineWidth = 10;
+
+    this.ctx.beginPath();
+    this.ctx.rect(this._border_displacement, this._border_displacement, this._inner_size, this._inner_size);
+    this.ctx.stroke();
+
     this.ctx.restore();
   }
 
