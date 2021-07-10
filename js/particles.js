@@ -7,13 +7,13 @@ class Particle {
     this._max_life = max_life;
     this._min_life = min_life;
 
-    this._noise_scl = 0.025 * scl; // used to calculate movement
-    this._seed_scl = 0.002 * scl; // used in seeding
-    this._time_scl = 0.075; // used in seeding
-    this._max_force = 0.25 * scl;
-    this._max_acc = 0.25 * scl;
+    this._noise_scl = 0.0075 * scl; // used to calculate movement
+    this._seed_scl = 0.005 * scl; // used in seeding
+    this._time_scl = 0.3; // used in seeding
+    this._max_force = 0.5 * scl;
+    this._max_acc = 0.2 * scl;
     this._max_vel = 2 * scl;
-    this._G = 0.1 * scl; // gravity acceleration
+    this._G = 0.2 * scl; // gravity acceleration
     this._min_r = 3;
     this._max_r = 10;
 
@@ -21,9 +21,9 @@ class Particle {
   }
 
   reset(frameCount) {
-    //  particles can be drawn ABOVE the top to add drip effect there too
-    const px = random(this._size);
-    const py = random(-this._size / 10, this._size);
+    //  particles can be drawn ABOVE and AROUND the top to add drip effect there too
+    const px = this._size * random(-0.05, 1.05);
+    const py = this._size * random(-0.1, 1);
     const t = frameCount / 60 * this._time_scl;
 
     this._gravity = new Vector(0, this._G);
@@ -93,8 +93,6 @@ class Particle {
 
     // check if the particle is too old or outside the canvas
     if (
-      this._position.x < 0 ||
-      this._position.x > this._size ||
       this._position.y > this._size ||
       this._life > this._start_life
     ) {
@@ -108,7 +106,10 @@ class Particle {
       this._delay--;
       return;
     }
-    if (this._position.y < 0) return; // some particles are added above the top
+    if (this._position.y < 0 ||
+      this._position.x < 0 ||
+      this._position.x > this._size)
+      return; // some particles are added above the top and around the sides
 
     // pre calculate "brush width"
     const eased_life = this._ease(1 - this._life / this._start_life);

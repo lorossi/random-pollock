@@ -58,8 +58,8 @@ class Sketch extends Engine {
     this.particles = [];
     const size = (1 - this._border) * this.width;
     const scl = random(0.9, 1.1);
-    const min_life = random(50, 100);
-    const max_life = min_life + random(50, 100);
+    const min_life = random(100, 200);
+    const max_life = min_life + random(100, 200);
     const palette = this.generate_palette();
     for (let i = 0; i < this._brushes_num; i++) {
       this.particles.push(new Particle(size, this._simplex, palette, scl, min_life, max_life));
