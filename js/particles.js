@@ -1,19 +1,21 @@
-class Brush {
-  constructor(size, noise, palette, scl = 1, max_life = 100, min_life = 20) {
+class Particle {
+  constructor(size, noise, palette, scl, max_life, min_life, noise_angle) {
     this._size = size;
     this._noise = noise;
     this._palette = [...palette];
     this._scl = scl;
     this._max_life = max_life;
     this._min_life = min_life;
+    this._noise_angle = noise_angle;
 
-    this._noise_scl = 0.015 * scl; // relative to movement
-    this._seed_scl = 0.0025 * scl; // used in seeding
+    this._noise_scl = 0.025 * scl; // relative to movement
+    this._seed_scl = 0.005 * scl; // used in seeding
     this._time_rho = 0.1; // needed to loop the animation
     this._max_force = 0.01;
     this._max_acc = 0.5 * scl;
     this._max_vel = 3;
     this._G = 0.0015 * scl; // gravity acceleration
+
 
     this.reset(0);
   }
@@ -32,8 +34,9 @@ class Brush {
     this._acceleration = new Vector(0, 0);
     this._seed = this._noise_scl * random(-1, 1) * 5;
 
-    const nx = this._position.x * this._seed_scl;
-    const ny = this._position.y * this._seed_scl;
+    // rotation matrix
+    const nx = this._seed_scl * this._position.x * Math.cos(this._noise_angle);
+    const ny = this._seed_scl * this._position.y * Math.cos(this._noise_angle);
     const n1 = (this._generateNoise(nx, ny, tx, ty) + 1) / 2;
     const n2 = (this._generateNoise(nx, ny, tx + 1000, ty + 1000) + 1) / 2;
     const n3 = (this._generateNoise(nx, ny, tx + 2000, ty + 2000) + 1) / 2;
@@ -60,7 +63,7 @@ class Brush {
     const rho = n * this._max_force;
     // simple physics simulation
     this._force = new Vector.fromAngle2D(theta).setMag(rho);
-    this._force.add(this._gravity) // add gravity
+    this._force.add(this._gravity); // add gravity
     this._acceleration.add(this._force);
     this._acceleration.limit(this._max_acc);
     this._velocity.add(this._acceleration);
