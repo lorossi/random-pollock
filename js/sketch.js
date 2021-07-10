@@ -1,9 +1,9 @@
 class Sketch extends Engine {
   preload() {
-    this._brushes_num = 2000;
+    this._brushes_num = 1000;
     this._duration = 900;
     this._recording = false;
-    this._random_palette = false;
+    this._random_palette = true;
   }
 
   setup() {
@@ -28,7 +28,7 @@ class Sketch extends Engine {
     const min_life = random(50, 100);
     const max_life = min_life + random(50, 100);
     const palette = this.generate_palette();
-    const noise_angle = Math.random() * Math.PI * 2;
+    const noise_angle = random(Math.PI); // adds direction to the noise
     for (let i = 0; i < this._brushes_num; i++) {
       this.particles.push(new Particle(this.width, this._simplex, palette, scl, min_life, max_life, noise_angle));
     }
@@ -44,14 +44,12 @@ class Sketch extends Engine {
   }
 
   showParticles() {
-    const percent = ((this.frameCount - this._frameOffset) % this._duration) / this._duration;
-
     this.ctx.save();
     this.particles.forEach(b => {
       b.move();
       b.show(this.ctx);
       if (b.dead) {
-        b.reset(percent);
+        b.reset(this.frameCount - this._frameOffset);
       }
     });
     this.ctx.restore();
@@ -75,10 +73,6 @@ class Sketch extends Engine {
     this.createParticles();
   }
 }
-
-const ease = x => {
-  return 1 - Math.pow(1 - x, 4);
-};
 
 const random = (a, b) => {
   if (a == undefined && b == undefined) return random(0, 1);

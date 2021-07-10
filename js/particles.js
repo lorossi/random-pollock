@@ -8,49 +8,65 @@ class Particle {
     this._min_life = min_life;
     this._noise_angle = noise_angle;
 
-    this._noise_scl = 0.025 * scl; // relative to movement
+    this._noise_scl = 0.025 * scl; // used to calculate movement
     this._seed_scl = 0.005 * scl; // used in seeding
-    this._time_rho = 0.1; // needed to loop the animation
-    this._max_force = 0.01;
-    this._max_acc = 0.5 * scl;
+    this._time_scl = 0.01; // used in seeding
+    this._max_force = 0.4 * scl;
+    this._max_acc = 0.75 * scl;
     this._max_vel = 3;
-    this._G = 0.0015 * scl; // gravity acceleration
+    this._G = 0.05 * scl; // gravity acceleration
 
 
     this.reset(0);
   }
 
-  reset(percent) {
-    const px = Math.random() * this._size;
-    const py = Math.random() * this._size;
-
-    const time_theta = Math.PI * 2 * percent;
-    const tx = this._time_rho * (1 + Math.cos(time_theta));
-    const ty = this._time_rho * (1 + Math.sin(time_theta));
+  reset(frameCount) {
+    const px = random(this._size);
+    const py = random(this._size);
+    const t = frameCount / 60 * this._time_scl;
 
     this._gravity = new Vector(0, this._G);
     this._position = new Vector(px, py);
-    this._velocity = new Vector(0, 0);
     this._acceleration = new Vector(0, 0);
     this._seed = this._noise_scl * random(-1, 1) * 5;
 
-    // rotation matrix
+    // pre calculation
     const nx = this._seed_scl * this._position.x * Math.cos(this._noise_angle);
-    const ny = this._seed_scl * this._position.y * Math.cos(this._noise_angle);
-    const n1 = (this._generateNoise(nx, ny, tx, ty) + 1) / 2;
-    const n2 = (this._generateNoise(nx, ny, tx + 1000, ty + 1000) + 1) / 2;
-    const n3 = (this._generateNoise(nx, ny, tx + 2000, ty + 2000) + 1) / 2;
+    const ny = this._seed_scl * this._position.y * Math.sin(this._noise_angle);
 
+    // noise calculation
+    //  all the noise variables are uncorrelated to each other but still
+    //  similar for close particles
+    const n1 = (this._generateNoise(nx, ny, t, 10000) + 1) / 2;
+    const n2 = (this._generateNoise(nx, ny, t, 20000) + 1) / 2;
+    const n3 = (this._generateNoise(nx, ny, t, 30000) + 1) / 2;
+    const n4 = (this._generateNoise(nx, ny, t, 40000) + 1) / 2;
+
+    // particle radius
     this._r = Math.floor(n1 * 7) + 3;
+    // particle starting life and life life
     this._start_life = n2 * (this._max_life - this._min_life) + this._min_life;
     this._life = 0;
+    // current color in the palette
     this._palette_index = Math.floor(n3 * this._palette.length);
-
+    // initial speed
+    const theta = n4 * Math.PI * 12;
+    this._velocity = new Vector.fromAngle2D(theta).setMag(this._max_vel);
+    // of course the particle is alive
     this._dead = false;
+
+    // preload to avoid the waterfall effect
+    if (frameCount == 0) {
+      this._delay = this._start_life * random(0.1, 1.5);
+    }
   }
 
   move() {
     if (this._dead) return;
+    if (this._delay > 0) {
+      this._delay--;
+      return;
+    }
 
     // pre calculate noise positions
     const nx = this._position.x * this._noise_scl;
@@ -86,8 +102,13 @@ class Particle {
 
   show(ctx) {
     if (this._dead) return;
+    if (this._delay > 0) {
+      this._delay--;
+      return;
+    }
+
     // pre calculate "brush width"
-    const eased_life = ease(1 - this._life / this._start_life);
+    const eased_life = this._ease(1 - this._life / this._start_life);
     const line_width = eased_life * this._r;
     // pre calculate and round coordinates for better performances
     const px = Math.floor(this._position.x);
@@ -104,6 +125,10 @@ class Particle {
 
   _generateNoise(x = 0, y = 0, z = 0, w = 0) {
     return this._noise.noise4D(x, y, z, w);
+  }
+
+  _ease(x) {
+    return x === 1 ? 1 : 1 - Math.pow(2, -10 * x); // exponential easing
   }
 
   get dead() {
