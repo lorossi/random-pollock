@@ -56,6 +56,12 @@ a:visited, a:active {
   padding-right: 2vw;
 }
 
+#download {
+  user-select: none;
+  border: 2px solid #322f2b;
+  border-radius: 4px;
+}
+
 @media only screen and (max-width: 600px) {
   #sketch {
     height: 95vw;
