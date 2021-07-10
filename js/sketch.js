@@ -5,6 +5,8 @@ class Sketch extends Engine {
     this._recording = false;
     this._random_palette = true;
     this._border = 0.15;
+    this._planes = 3;
+    this._biases = [{ bias: 0.7, value: 0 }, { bias: 0.95, value: 1 }, { bias: 1, value: 2 }];
   }
 
   setup() {
@@ -57,12 +59,16 @@ class Sketch extends Engine {
     // setup particles
     this.particles = [];
     const size = (1 - this._border) * this.width;
-    const scl = random(0.9, 1.1);
-    const min_life = random(100, 200);
-    const max_life = min_life + random(100, 200);
+    const scl = random(0.5, 2);
+    const max_life = random(200, 400);
     const palette = this.generate_palette();
+
     for (let i = 0; i < this._brushes_num; i++) {
-      this.particles.push(new Particle(size, this._simplex, palette, scl, min_life, max_life));
+      // take one of the biased random values from the list
+      // the particles are now on "planes" that overlay each other and work in different ways
+      const random_selector = random();
+      const plane_seed = this._biases.filter(b => b.bias >= random_selector)[0].value;
+      this.particles.push(new Particle(size, this._simplex, palette, scl, max_life, plane_seed));
     }
     this.background("#fbf1e3");
   }
