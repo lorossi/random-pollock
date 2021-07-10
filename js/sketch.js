@@ -1,6 +1,6 @@
 class Sketch extends Engine {
   preload() {
-    this._brushes_num = 3000;
+    this._brushes_num = 2000;
     this._duration = 900;
   }
 
@@ -15,8 +15,8 @@ class Sketch extends Engine {
     // setup particles
     this._brushes = [];
     const scl = random(0.9, 1.1);
-    const min_life = random(100, 200);
-    const max_life = min_life + random(100, 200);
+    const min_life = random(50, 100);
+    const max_life = min_life + random(50, 100);
     const palette = generate_palette();
     for (let i = 0; i < this._brushes_num; i++) {
       this._brushes.push(new Brush(this.width, this._simplex, palette, scl, min_life, max_life));
@@ -93,7 +93,8 @@ const generate_palette = () => {
     "#F2B988",
     "#F28B66",
     "#F26A4B",
-  ], ["#96D2D9",
+  ], [
+    "#96D2D9",
     "#F28D77",
     "#D9564A",
     "#F25050",
@@ -119,7 +120,7 @@ const generate_palette = () => {
 };
 
 const ease = x => {
-  return 1 - Math.pow(1 - x, 3);
+  return 1 - Math.pow(1 - x, 4);
 };
 
 const random = (a, b) => {

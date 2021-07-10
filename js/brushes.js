@@ -10,9 +10,11 @@ class Brush {
     this._noise_scl = 0.015 * scl; // relative to movement
     this._seed_scl = 0.001 * scl; // used in seeding
     this._time_rho = 1; // needed to loop the animation
-    this._max_force = 0.1;
-    this._max_acc = 3 * scl;
-    this._max_vel = 2;
+    this._max_force = 0.01;
+    this._max_acc = 0.5 * scl;
+    this._max_vel = 3;
+    this._G = 0.001 * scl; // gravity acceleration
+
     this.reset(0);
   }
 
@@ -24,6 +26,7 @@ class Brush {
     const tx = this._time_rho * (1 + Math.cos(time_theta));
     const ty = this._time_rho * (1 + Math.sin(time_theta));
 
+    this._gravity = new Vector(0, this._G);
     this._position = new Vector(px, py);
     this._velocity = new Vector(0, 0);
     this._acceleration = new Vector(0, 0);
@@ -35,7 +38,7 @@ class Brush {
     const n2 = (this._generateNoise(nx, ny, tx + 1000, ty + 1000) + 1) / 2;
     const n3 = (this._generateNoise(nx, ny, tx + 2000, ty + 2000) + 1) / 2;
 
-    this._r = Math.floor(n1 * 4) + 4;
+    this._r = Math.floor(n1 * 7) + 2;
     this._start_life = n2 * (this._max_life - this._min_life) + this._min_life;
     this._life = 0;
     this._palette_index = Math.floor(n3 * this._palette.length);
@@ -57,6 +60,7 @@ class Brush {
     const rho = n * this._max_force;
     // simple physics simulation
     this._force = new Vector.fromAngle2D(theta).setMag(rho);
+    this._force.add(this._gravity) // add gravity
     this._acceleration.add(this._force);
     this._acceleration.limit(this._max_acc);
     this._velocity.add(this._acceleration);
