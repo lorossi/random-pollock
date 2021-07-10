@@ -22,6 +22,8 @@ Basically, each particle is created on the canvas and a its color, size, life du
 
 Also, the particles are split in a few different layers, behaving in completely different ways and not interacting at all with each other. This adds a lot of variance.
 
+I would like to know how man times each pixel gets painted on. Luckily there's no way to know that since pixels are weightless.
+
 ## One big answer to end all questions
 
 *Did I manage to do it?* Well, you tell me by yourself. You can try the generator by yourself [here]() (click to generate a new painting and press the button to save it) or take a look at some of the pre-rendered and pre-saved videos and images [on my Instagram account](https://www.instagram.com/lorossi97/)
