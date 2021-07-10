@@ -24,10 +24,11 @@ class Sketch extends Engine {
     this.createParticles();
     // setup capturer
     this._capturer_started = false;
+    this._preload_frames = 120;
     if (this._recording) {
       this._capturer = new CCapture({ format: "png" });
       // WARNING: slow as heck
-      for (let i = 0; i < this._duration; i++) this.showParticles();
+      for (let i = 0; i < this._preload_frames; i++) this.showParticles();
     }
   }
 
