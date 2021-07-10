@@ -83,8 +83,7 @@ class Sketch extends Engine {
 
     const frame_size = 10;
     const extra = frame_size / 2;
-    this.ctx.strokeStyle = "#191715";
-    this.ctx.fillStyle = "#fbf1e3";
+    this.ctx.strokeStyle = "#322f2b";
     this.ctx.lineWidth = frame_size;
 
     this.ctx.beginPath();
