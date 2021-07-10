@@ -7,13 +7,13 @@ class Particle {
     this._max_life = max_life;
     this._plane_seed = plane;
 
-    this._noise_scl = 0.0025 * scl; // used to calculate movement
+    this._noise_scl = 0.004 * scl; // used to calculate movement
     this._seed_scl = 0.004 * scl; // used in seeding
     this._time_scl = 0.3; // used in seeding
-    this._max_force = 1;
+    this._max_force = 2;
     this._max_acc = 2;
-    this._max_vel = 2;
-    this._G = 0.35; // gravity acceleration
+    this._max_vel = 1;
+    this._G = 0.75; // gravity acceleration
     this._min_r = 2;
     this._max_r = 10;
 
