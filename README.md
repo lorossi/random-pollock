@@ -4,9 +4,21 @@
 
 One of the artist that I admire is Jackson Pollock. He has created more than 20 of the most famous abstract expressionist paintings. He is also the father of the *action painting*, a unique style of painting in which the paint is *splashed* (is this even a word?) on the canvas and let drip.
 
-It is a really *curious* method, to say the least. Pollock himself was nicknamed "Jack the dripper" by the Times.
+It is a really *curious* method, to say the least. Pollock himself was nicknamed "Jack the dripper" by the newspaper TIME.
 
 I would not like to own a Pollock, nor I would hang one of his paintings on a wall inside my home (not that I would be able to afford it, since they sell for millions of dollars) but I asked myself: *"Can I replicate his technique using code?"
+
+## Additional questions
+
+Now that I had the idea, *how could I make it real?*
+
+First I decided to fire up the ol' good VSCode and clone [my lightweight html5 template](https://github.com/lorossi/empty-html5-canvas-project). To track the particles position, their speed, acceleration etc. I used a [custom JS library that I made a while back.](https://github.com/lorossi/js-vectors). In order to add some randomness in their movements and give a more natural feeling, I used [simplex-noise.js by jwagner.](https://github.com/jwagner/simplex-noise.js/) It is really awesome library and I don't I can say that enough.
+
+Surprisingly (*but not really*) the hardest part was to pick the color palettes. I used [Adobe colors](https://color.adobe.com/explore). I am still quite working on it since because I can't really find a way to generate a random palette or an efficient way to choose one from the internet (I have to try them one by one).
+
+## One big answer to end all questions
+
+*Did I manage to do it?* Well, you tell me by yourself. You can try the generator by yourself [here]() or take a look at some of the pre-rendered and pre-saved videos and images [on my Instagram account]()
 
 ## Credits
 
