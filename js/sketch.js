@@ -3,7 +3,6 @@ class Sketch extends Engine {
     this._brushes_num = 2500;
     this._duration = 900;
     this._recording = false;
-    this._random_palette = false;
     this._border = 0.15;
     this._planes = 3;
     this._biases = [{ bias: 0.7, value: 0 }, { bias: 0.95, value: 1 }, { bias: 1, value: 2 }];
@@ -100,16 +99,53 @@ class Sketch extends Engine {
   }
 
 
-  generate_palette() {
-    if (this._random_palette) return random_from_array(palettes);
-    else {
-      const picked = palettes[this._current_palette];
+  generate_palette(length = 5, complementary = 2) {
+    let values = [];
+    let palette = [];
 
-      console.log({ index: this._current_palette, palette: picked });
+    const dir = random() > 0.5 ? -1 : 1;
+    const h1 = random();
+    const h2 = wrap(h1 + random(0.15, 0.2) * dir);
+    const s = random(0.95, 1);
+    const v = random(0.45, 0.5);
 
-      this._current_palette = (this._current_palette + 1) % palettes.length;
-      return picked;
+    const start = hsl_to_rgb(h1, s, v);
+    const end = hsl_to_rgb(h2, s, v);
+
+    values.push(start);
+
+    const span = [end[0] - start[0], end[1] - start[1], end[2] - start[2]];
+
+    for (let i = 0; i < length - 2; i++) {
+      let new_color = Array(3);
+      for (let j = 0; j < 3; j++) {
+        new_color[j] = Math.floor(
+          wrap(start[j] + (span[j] * (i + 1)) / length, 0, 255)
+        );
+      }
+      values.push(new_color);
     }
+    values.push(end);
+
+
+    for (let i = 0; i < complementary; i++) {
+      const hc = wrap(h1 + random(0.2, 0.4));
+      const complementary = hsl_to_rgb(hc, s, v);
+      values.push(complementary);
+    }
+
+
+    values.forEach((v) => {
+      let color;
+      color = "#";
+
+      v.forEach((c) => {
+        color += c.toString(16).padStart(2, 0);
+      });
+      palette.push(color);
+    });
+
+    return palette;
   }
 
   mousedown() {
@@ -133,3 +169,34 @@ const random_int = (a, b) => {
 const random_from_array = arr => {
   return arr[random_int(arr.length)];
 };
+
+const wrap = (value, min_val = 0, max_val = 1) => {
+  while (value > max_val) value -= max_val - min_val;
+  while (value < min_val) value += max_val - min_val;
+  return value;
+};
+
+function hsl_to_rgb(h, s, l) {
+  let r, g, b;
+
+  if (s == 0) {
+    r = g = b = l; // achromatic
+  } else {
+    const hue_to_rgb = (p, q, t) => {
+      if (t < 0) t += 1;
+      if (t > 1) t -= 1;
+      if (t < 1 / 6) return p + (q - p) * 6 * t;
+      if (t < 1 / 2) return q;
+      if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+      return p;
+    };
+
+    let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+    let p = 2 * l - q;
+    r = hue_to_rgb(p, q, h + 1 / 3);
+    g = hue_to_rgb(p, q, h);
+    b = hue_to_rgb(p, q, h - 1 / 3);
+  }
+
+  return [Math.round(r * 255), Math.round(g * 255), Math.round(b * 255)];
+}
