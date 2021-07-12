@@ -1,9 +1,9 @@
 class Sketch extends Engine {
   preload() {
-    this._brushes_num = 2000;
+    this._brushes_num = 2500;
     this._duration = 900;
     this._recording = false;
-    this._random_palette = true;
+    this._random_palette = false;
     this._border = 0.15;
     this._planes = 3;
     this._biases = [{ bias: 0.7, value: 0 }, { bias: 0.95, value: 1 }, { bias: 1, value: 2 }];
