@@ -15,7 +15,7 @@ class Particle {
     this._max_vel = 1.5;
     this._G = 0.75; // gravity acceleration
     this._min_r = 2;
-    this._max_r = 10;
+    this._max_r = 7;
 
     this.reset(0);
   }
