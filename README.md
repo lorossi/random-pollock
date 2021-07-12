@@ -1,6 +1,6 @@
 # Random Pollock
 
-## [Try it here]()
+## [Try it here](https://lorenzoros.si/random-pollock/)
 
 ## One big question
 
@@ -29,7 +29,9 @@ I would like to know how man times each pixel gets painted on, as a way to measu
 
 ## One big answer to end all questions
 
-*Did I manage to do it?* Well, you tell me. Try the generator by yourself [here]() *(click to generate a new painting and press the button to save it)* or take a look at some of the pre-rendered and pre-saved videos and images [on my Instagram account](https://www.instagram.com/lorossi97/) or just a little bit below in this page (although in low-quality, since GitHub doesn't allow anything other than GIFs).
+*Did I manage to do it?* Well, you tell me. Try the generator by yourself [here](https://lorenzoros.si/random-pollock/) *(click to generate a new painting and press the button to save it)* or take a look at some of the pre-rendered and pre-saved videos and images [on my Instagram account](https://www.instagram.com/lorossi97/) or just a little bit below in this page (although in low-quality, since GitHub doesn't allow anything other than GIFs).
+
+**GIF ARE STILL WIP...**
 
 ## Credits
 
