@@ -1,5 +1,5 @@
 class Particle {
-  constructor(size, noise, palette, scl, max_life, plane) {
+  constructor(size, noise, palette, scl, max_life, plane, g) {
     this._size = size;
     this._noise = noise;
     this._palette = [...palette];
@@ -8,19 +8,19 @@ class Particle {
     this._plane_seed = plane;
 
     this._noise_scl = 0.004 * scl; // used to calculate movement
-    this._seed_scl = 0.002 * scl; // used in seeding
-    this._time_scl = 0.4; // used in seeding
+    this._seed_scl = 0.001 * scl; // used in seeding
+    this._time_scl = 0.05; // used in seeding
     this._max_force = 2;
     this._max_acc = 2;
     this._max_vel = 1.5;
-    this._G = 0.75; // gravity acceleration
-    this._min_r = 2;
-    this._max_r = 7;
+    this._min_r = 3;
+    this._max_r = 8;
+    this._G = g;
 
-    this.reset(0);
+    this.reset();
   }
 
-  reset(frameCount) {
+  reset(frameCount = 0) {
     //  particles can be drawn ABOVE and AROUND the top to add drip effect there too
     const px = this._size * random(-0.05, 1.05);
     const py = this._size * random(-0.1, 1);
@@ -54,6 +54,7 @@ class Particle {
     // initial speed
     const theta = n4 * Math.PI * 12;
     this._velocity = new Vector.fromAngle2D(theta).setMag(this._max_vel);
+
     // of course the particle is alive
     this._dead = false;
 

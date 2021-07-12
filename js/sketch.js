@@ -3,10 +3,10 @@ class Sketch extends Engine {
     this._brushes_num = 2500;
     this._duration = 900;
     this._recording = false;
-    this._random_palette = false;
     this._border = 0.15;
     this._planes = 3;
     this._biases = [{ bias: 0.7, value: 0 }, { bias: 0.95, value: 1 }, { bias: 1, value: 2 }];
+    this._palette_debug = false;
   }
 
   setup() {
@@ -63,13 +63,14 @@ class Sketch extends Engine {
     const scl = random(0.5, 2);
     const max_life = random(200, 400);
     const palette = this.generate_palette();
+    const g = random(0.7, 0.8); // small variance in G aswell
 
     for (let i = 0; i < this._brushes_num; i++) {
       // take one of the biased random values from the list
       // the particles are now on "planes" that overlay each other and work in different ways
       const random_selector = random();
       const plane_seed = this._biases.filter(b => b.bias >= random_selector)[0].value;
-      this.particles.push(new Particle(size, this._simplex, palette, scl, max_life, plane_seed));
+      this.particles.push(new Particle(size, this._simplex, palette, scl, max_life, plane_seed, g));
     }
     this.background("#fbf1e3");
   }
@@ -101,15 +102,19 @@ class Sketch extends Engine {
 
 
   generate_palette() {
-    if (this._random_palette) return random_from_array(palettes);
-    else {
-      const picked = palettes[this._current_palette];
-
+    let picked; // currently picked palette
+    if (this._recording || this._palette_debug) {
+      picked = palettes[this._current_palette];
       console.log({ index: this._current_palette, palette: picked });
-
       this._current_palette = (this._current_palette + 1) % palettes.length;
-      return picked;
     }
+    else {
+      picked = random_from_array(palettes);
+    }
+
+    shuffle_array(picked);
+    return picked;
+
   }
 
   mousedown() {
@@ -132,4 +137,11 @@ const random_int = (a, b) => {
 
 const random_from_array = arr => {
   return arr[random_int(arr.length)];
+};
+
+const shuffle_array = a => {
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
 };
