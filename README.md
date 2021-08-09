@@ -1,9 +1,9 @@
 # Random Pollock
 
+## [Try it here](https://lorenzoros.si/random-pollock/)
+
 ![montage-1](output/images/montages/resized-montage-1.png)
 ![montage-2](output/images/montages/resized-montage-2.png)
-
-## [Try it here](https://lorenzoros.si/random-pollock/)
 
 ![montage-3](output/images/montages/resized-montage-3.png)
 ![montage-4](output/images/montages/resized-montage-4.png)
@@ -35,9 +35,17 @@ I would like to know how man times each pixel gets painted on, as a way to measu
 
 ## One big answer to end all questions
 
-*Did I manage to do it?* Well, you tell me. Try the generator by yourself [here](https://lorenzoros.si/random-pollock/) *(click to generate a new painting and press the button to save it)* or take a look at some of the pre-rendered and pre-saved videos and images [on my Instagram account](https://www.instagram.com/lorossi97/) or just a little bit below in this page (although in low-quality, since GitHub doesn't allow anything other than GIFs).
+*Did I manage to do it?* Well, you tell me. Try the generator by yourself [here](https://lorenzoros.si/random-pollock/) *(click to generate a new painting and press the button to save it)* or take a look at some of the pre-rendered and pre-saved videos and images [on my Instagram account](https://www.instagram.com/lorossi97/). I am not able to put all the videos in here because the GIFs are just too big. So, take a look at some of the rendered pictures or check this [video on Vimeo](https://vimeo.com/585075650)
 
-**GIF ARE STILL WIP...**
+![image-1](output/images/palette-00.png)
+
+![image-2](output/images/palette-09.png)
+
+![image-3](output/images/palette-08.png)
+
+![image-4](output/images/palette-17.png)
+
+![image-5](output/images/palette-20.png)
 
 ## Credits
 
