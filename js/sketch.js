@@ -120,8 +120,6 @@ class Sketch extends Engine {
 
     this._current_palette = (this._current_palette + 1) % palettes.length;
 
-    // shuffle the palette before returning it
-    // shuffle_array(picked);
     return picked;
   }
 
