@@ -58,10 +58,10 @@ class Sketch extends Engine {
         console.log("%c Recording ended", "color: red; font-size: 2rem");
       }
     }
-
+    // auto save frames if flag is set
     if (this._auto_save && (this.frameCount - this._frame_offset) == this._duration) {
       this._frame_offset = this.frameCount;
-      this.saveAsImage(`${this._current_palette}-${Math.floor(new Date() / 1000)}`);
+      this.saveAsImage(`random-pollock-${Math.floor(new Date() / 1000)}`);
       this.createParticles();
     }
   }
