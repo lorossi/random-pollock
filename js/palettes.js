@@ -1,4 +1,7 @@
-const palettes = [
+// huge list of palettes as hex colors
+// too big to be put with anything else
+
+let palettes = [
   [
     "#1C58A6",
     "#176FA6",
