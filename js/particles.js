@@ -12,7 +12,7 @@ class Particle {
     this._time_scl = 0.09; // used in seeding
     this._max_force = 2;
     this._max_acc = 2;
-    this._max_vel = 1.5;
+    this._max_vel = 2;
     this._min_r = 3;
     this._max_r = 8;
     this._G = g;
