@@ -1,6 +1,14 @@
 # Random Pollock
 
+![montage-1](output/images/montages/montage_1.png)
+
+![montage-2](output/images/montages/montage_2.png)
+
 ## [Try it here](https://lorenzoros.si/random-pollock/)
+
+![montage-3](output/images/montages/montage_1.png)
+
+![montage-4](output/images/montages/montage_1.png)
 
 ## One big question
 
