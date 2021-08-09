@@ -60,6 +60,7 @@ a:visited, a:active {
   user-select: none;
   border: 2px solid #322f2b;
   border-radius: 4px;
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 600px) {

@@ -211,10 +211,6 @@ document.addEventListener("DOMContentLoaded", () => {
   canvas.addEventListener("touchmove", e => s.touchmove(e));
   // keyboard event listeners
   document.addEventListener("keydown", e => s.keydown(e));
-
-  // download listener
-  const download_button = document.querySelector("#download");
-  download_button.addEventListener("click", e => s.saveAsImage("random Pollock"));
 });
 
 class Color {

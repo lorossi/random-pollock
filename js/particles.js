@@ -9,7 +9,7 @@ class Particle {
 
     this._noise_scl = 0.004 * scl; // used to calculate movement
     this._seed_scl = 0.001 * scl; // used in seeding
-    this._time_scl = 0.075; // used in seeding
+    this._time_scl = 0.09; // used in seeding
     this._max_force = 2;
     this._max_acc = 2;
     this._max_vel = 1.5;

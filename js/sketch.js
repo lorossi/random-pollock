@@ -1,17 +1,21 @@
 class Sketch extends Engine {
   preload() {
-    this._brushes_num = 2500;
+    this._brushes_num = 500;
     this._duration = 1800;
     this._recording = false;
     this._border = 0.15;
     this._planes = 3;
     this._biases = [{ bias: 0.7, value: 0 }, { bias: 0.95, value: 1 }, { bias: 1, value: 2 }];
     this._palette_debug = false;
+
+    // download button
+    const download_button = document.querySelector("#download");
+    download_button.addEventListener("click", () => this.saveAsImage("Random-Pollock"));
   }
 
   setup() {
     // used in non random palette choosing
-    this._current_palette = 0;
+    this._current_palette = 2;
     // shuffle palette array if not recording or in debug mode
     if (!this._recording && !this._palette_debug) shuffle_array(palettes);
     // used in time calculation
