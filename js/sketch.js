@@ -1,7 +1,7 @@
 class Sketch extends Engine {
   preload() {
     this._brushes_num = 2500;
-    this._duration = 900;
+    this._duration = 1800;
     this._recording = false;
     this._border = 0.15;
     this._planes = 3;
@@ -112,7 +112,9 @@ class Sketch extends Engine {
     let picked; // currently picked palette
     // select the new palette and increase the count
     picked = palettes[this._current_palette];
-    console.log({ index: this._current_palette, palette: picked });
+    if (this._recording)
+      console.log({ index: this._current_palette, palette: picked, total_palettes: palettes.length });
+
     this._current_palette = (this._current_palette + 1) % palettes.length;
 
     // shuffle the palette before returning it
