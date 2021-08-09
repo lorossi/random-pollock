@@ -14,7 +14,6 @@ class Sketch extends Engine {
     this._current_palette = 0;
     // shuffle palette array if not recording or in debug mode
     if (!this._recording && !this._palette_debug) shuffle_array(palettes);
-
     // used in time calculation
     this._frame_offset = 0;
     // calculate border displacement
@@ -27,11 +26,8 @@ class Sketch extends Engine {
     this.createParticles();
     // setup capturer
     this._capturer_started = false;
-
     if (this._recording) {
       this._capturer = new CCapture({ format: "png" });
-      // WARNING: slow as heck
-      for (let i = 0; i < this._duration * 2; i++) this.showParticles();
     }
   }
 
@@ -125,6 +121,9 @@ class Sketch extends Engine {
   }
 
   mousedown() {
+    // click has no effect while recording
+    if (this._recording) return;
+
     this._frame_offset = this.frameCount;
     this.createParticles();
   }
