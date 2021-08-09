@@ -2,11 +2,11 @@ class Sketch extends Engine {
   preload() {
     this._brushes_num = 1000;
     this._border = 0.15;
-    this._planes = 3;
     this._biases = [{ bias: 0.7, value: 0 }, { bias: 0.95, value: 1 }, { bias: 1, value: 2 }];
-    this._palette_debug = false;
     this._duration = 1800;
     this._recording = false;
+    this._auto_save = false;
+    this._palette_debug = false;
     // download button
     const download_button = document.querySelector("#download");
     download_button.addEventListener("click", () => this.saveAsImage("Random-Pollock"));
@@ -19,10 +19,6 @@ class Sketch extends Engine {
     if (!this._recording && !this._palette_debug) shuffle_array(palettes);
     // used in time calculation
     this._frame_offset = 0;
-    // calculate border displacement
-    // rounded for better performances
-    this._border_displacement = Math.floor(this._border * this.width / 2);
-    this._inner_size = Math.floor(this.height * (1 - this._border));
     // noise setup
     this._simplex = new SimplexNoise();
     // create the particles
@@ -49,6 +45,12 @@ class Sketch extends Engine {
     if (this._recording) {
       if ((this.frameCount - this._frame_offset) < this._duration) {
         this._capturer.capture(this._canvas);
+
+        // periodically show updates
+        const percent = (this.frameCount - this._frame_offset) / this._duration * 100;
+        if (percent % 5 == 0)
+          console.log(`%c Recording currently at ${Math.floor(percent)}%`, "color: green");
+
       } else {
         this._recording = false;
         this._capturer.stop();
@@ -56,16 +58,22 @@ class Sketch extends Engine {
         console.log("%c Recording ended", "color: red; font-size: 2rem");
       }
     }
+
+    if (this._auto_save && (this.frameCount - this._frame_offset) == this._duration) {
+      this._frame_offset = this.frameCount;
+      this.saveAsImage(`${this._current_palette}-${Math.floor(new Date() / 1000)}`);
+      this.createParticles();
+    }
   }
 
   createParticles() {
     // setup particles
     this.particles = [];
-    const size = (1 - this._border) * this.width;
+    const size = this.width;
     const scl = random(0.5, 2);
     const max_life = random(200, 400);
     const palette = this.generate_palette();
-    const g = random(0.7, 0.8); // small variance in G  gravitational constant) as well
+    const g = random(0.7, 0.8); // small variance in G (gravitational constant) as well
 
     for (let i = 0; i < this._brushes_num; i++) {
       // take one of the biased random values from the list
@@ -83,8 +91,9 @@ class Sketch extends Engine {
     this.ctx.save();
 
     // move to fit the border
-    this.ctx.save();
-    this.ctx.translate(this._border_displacement, this._border_displacement);
+    this.ctx.translate(this.width / 2, this.height / 2);
+    this.ctx.scale(1 - this._border, 1 - this._border);
+    this.ctx.translate(-this.width / 2, -this.height / 2);
 
     // draw each particle
     this.particles.forEach(b => {
@@ -94,28 +103,23 @@ class Sketch extends Engine {
         b.reset(this.frameCount - this._frame_offset);
       }
     });
-    this.ctx.restore();
 
     // frame settings
     const frame_size = 10;
-    const extra = frame_size / 2;
     this.ctx.strokeStyle = "#322f2b";
     this.ctx.lineWidth = frame_size;
 
     // draw the actual frame
-    this.ctx.beginPath();
-    this.ctx.rect(this._border_displacement - extra, this._border_displacement - extra, this._inner_size + 2 * extra, this._inner_size + 2 * extra);
-    this.ctx.stroke();
+    this.ctx.strokeRect(0, 0, this.width, this.height);
 
     this.ctx.restore();
   }
 
 
   generate_palette() {
-    let picked; // currently picked palette
     // select the new palette and increase the count
-    picked = palettes[this._current_palette];
-    if (this._recording)
+    const picked = palettes[this._current_palette];
+    if (this._palette_debug || this._recording)
       console.log({ index: this._current_palette, palette: picked, total_palettes: palettes.length });
 
     this._current_palette = (this._current_palette + 1) % palettes.length;
