@@ -24,7 +24,7 @@ class Particle {
     //  particles can be drawn ABOVE and AROUND the top to add drip effect there too
     const px = this._size * random(-0.05, 1.05);
     const py = this._size * random(-0.1, 1);
-    const t = frameCount / 60 * this._time_scl;
+    const t = (frameCount / 60) * this._time_scl;
 
     this._gravity = new Vector(0, this._G);
     this._position = new Vector(px, py);
@@ -38,10 +38,14 @@ class Particle {
     // noise calculation
     //  all the noise variables are uncorrelated to each other but still
     //  similar for close particles
-    const n1 = (this._generateNoise(nx, ny, t + 10000, this._plane_seed) + 1) / 2;
-    const n2 = (this._generateNoise(nx, ny, t + 20000, this._plane_seed) + 1) / 2;
-    const n3 = (this._generateNoise(nx, ny, t + 30000, this._plane_seed) + 1) / 2;
-    const n4 = (this._generateNoise(nx, ny, t + 40000, this._plane_seed) + 1) / 2;
+    const n1 =
+      (this._generateNoise(nx, ny, t + 10000, this._plane_seed) + 1) / 2;
+    const n2 =
+      (this._generateNoise(nx, ny, t + 20000, this._plane_seed) + 1) / 2;
+    const n3 =
+      (this._generateNoise(nx, ny, t + 30000, this._plane_seed) + 1) / 2;
+    const n4 =
+      (this._generateNoise(nx, ny, t + 40000, this._plane_seed) + 1) / 2;
 
     // particle mass and radius
     this._r = Math.floor(n1 * (this._max_r - this._min_r)) + this._min_r;
@@ -93,10 +97,7 @@ class Particle {
     this._life += this._velocity.mag();
 
     // check if the particle is too old or outside the canvas
-    if (
-      this._position.y > this._size ||
-      this._life > this._start_life
-    ) {
+    if (this._position.y > this._size || this._life > this._start_life) {
       this._dead = true;
     }
   }
@@ -107,9 +108,11 @@ class Particle {
       this._delay--;
       return;
     }
-    if (this._position.y < 0 ||
+    if (
+      this._position.y < 0 ||
       this._position.x < 0 ||
-      this._position.x > this._size)
+      this._position.x > this._size
+    )
       return; // some particles are added above the top and around the sides
 
     // pre calculate "brush width"
@@ -129,7 +132,7 @@ class Particle {
   }
 
   _generateNoise(x = 0, y = 0, z = 0, w = 0) {
-    return this._noise.noise4D(x, y, z, w);
+    return this._noise.noise(x, y, z, w);
   }
 
   _ease(x) {
